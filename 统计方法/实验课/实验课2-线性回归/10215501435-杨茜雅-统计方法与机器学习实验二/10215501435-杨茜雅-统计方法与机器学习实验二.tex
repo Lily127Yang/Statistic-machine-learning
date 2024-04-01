@@ -1,0 +1,1599 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{10215501435-杨茜雅-统计方法与机器学习实验二}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{ux7edfux8ba1ux65b9ux6cd5ux4e0eux673aux5668ux5b66ux4e60ux5b9eux9a8cux4e8c}{%
+\subsection{统计方法与机器学习实验二}\label{ux7edfux8ba1ux65b9ux6cd5ux4e0eux673aux5668ux5b66ux4e60ux5b9eux9a8cux4e8c}}
+
+\hypertarget{ux6768ux831cux96c5}{%
+\subsubsection{10215501435 杨茜雅}\label{ux6768ux831cux96c5}}
+
+\hypertarget{ux80ccux666fux63cfux8ff0}{%
+\subsection{背景描述}\label{ux80ccux666fux63cfux8ff0}}
+
+汽车发动机在测功机上产生的\textbf{制动马力}被认为是\textbf{发动机转速}(每分钟转数，rpm)、\textbf{燃料的道路辛烷值}和\textbf{发动机压缩值}的函数，我们在实验室里进行实验，研究它们的函数关系。
+
+\hypertarget{ux6570ux636eux63cfux8ff0}{%
+\subsection{数据描述}\label{ux6570ux636eux63cfux8ff0}}
+
+\begin{longtable}[]{@{}cccc@{}}
+\toprule\noalign{}
+变量名 & 变量含义 & 变量类型 & 变量取值范围 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+rpm & 发动机转速 & 连续变量 & \(R^+\) \\
+Road\_Octane\_Number & 道路辛烷值 & 连续变量 & \(R+\) \\
+Compression & 压缩值 & 连续变量 & \(R^+\) \\
+Brake\_Horsepower & 制动马力 & 连续变量 & \(R^+\) \\
+\end{longtable}
+
+\hypertarget{ux4efbux52a1}{%
+\subsection{任务}\label{ux4efbux52a1}}
+
+注：这里使用 \(\alpha=0.05\) 的显著性水平。
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  请用多元线性回归模型，描述制动马力和发动机转速、道路辛烷值以及压缩值之间的函数关系。
+\item
+  分别将数据中心化、标准化之后，比较参数估计的异同，并进行评述（提示：可以结合理论课的课件）。
+\item
+  从模型显著性、参数显著性以及残差分析三个角度，分析多元线性回归模型是否合理。
+\item
+  若取发动机转速为3000转/min，道路辛烷值为90，发动机压缩值为100时，分别给出制动马力值的置信区间和预测区间。
+\end{enumerate}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{74}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{os} \PY{c+c1}{\PYZsh{} 修改工作目录}
+
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{import} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{stats} \PY{k}{as} \PY{n+nn}{stats}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{linear\PYZus{}model} \PY{k+kn}{import} \PY{n}{LinearRegression}
+\PY{k+kn}{from} \PY{n+nn}{jupyterquiz} \PY{k+kn}{import} \PY{n}{display\PYZus{}quiz}
+
+\PY{k+kn}{import} \PY{n+nn}{statsmodels}\PY{n+nn}{.}\PY{n+nn}{api} \PY{k}{as} \PY{n+nn}{sm}
+\PY{k+kn}{from} \PY{n+nn}{statsmodels}\PY{n+nn}{.}\PY{n+nn}{formula}\PY{n+nn}{.}\PY{n+nn}{api} \PY{k+kn}{import} \PY{n}{ols}
+\PY{k+kn}{from} \PY{n+nn}{statsmodels}\PY{n+nn}{.}\PY{n+nn}{stats}\PY{n+nn}{.}\PY{n+nn}{anova} \PY{k+kn}{import} \PY{n}{anova\PYZus{}lm}
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{stats} \PY{k+kn}{import} \PY{n}{f}
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{stats} \PY{k+kn}{import} \PY{n}{t}
+
+\PY{k+kn}{from} \PY{n+nn}{sklearn} \PY{k+kn}{import} \PY{n}{datasets}\PY{p}{,} \PY{n}{linear\PYZus{}model}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{metrics} \PY{k+kn}{import} \PY{n}{mean\PYZus{}squared\PYZus{}error}\PY{p}{,} \PY{n}{r2\PYZus{}score}
+\PY{k+kn}{from} \PY{n+nn}{sklearn} \PY{k+kn}{import} \PY{n}{preprocessing}
+
+\PY{k+kn}{import} \PY{n+nn}{warnings}
+\PY{n}{warnings}\PY{o}{.}\PY{n}{filterwarnings}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ignore}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{alpha} \PY{o}{=} \PY{l+m+mf}{0.05}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{75}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{os}\PY{o}{.}\PY{n}{chdir}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{/Users/86138/统计方法实验二/Data}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{76}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Data 3 is shown as follows: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Project\PYZus{}3.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Data 3 is shown as follows:
+      rpm  Road Octane Number  Compression  Brake Horsepower
+0   2000                  90          100               225
+1   1800                  94           95               212
+2   2400                  88          110               229
+3   1900                  91           96               222
+4   1600                  86          100               219
+5   2500                  96          110               278
+6   3000                  94           98               246
+7   3200                  90          100               237
+8   2800                  88          105               233
+9   3400                  86           97               224
+10  1800                  90          100               223
+11  2500                  89          104               230
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{77}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{Data} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Project\PYZus{}3.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{Data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+    rpm  Road Octane Number  Compression  Brake Horsepower
+0  2000                  90          100               225
+1  1800                  94           95               212
+2  2400                  88          110               229
+3  1900                  91           96               222
+4  1600                  86          100               219
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{78}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{n} \PY{o}{=} \PY{n}{Data}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\PY{n}{p} \PY{o}{=} \PY{n}{Data}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The number of instances is }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{n}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The number of features is }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{p}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The number of instances is  12
+The number of features is  3
+    \end{Verbatim}
+
+    \hypertarget{task-1-ux8bf7ux7528ux591aux5143ux7ebfux6027ux56deux5f52ux6a21ux578bux63cfux8ff0ux5236ux52a8ux9a6cux529bux548cux53d1ux52a8ux673aux8f6cux901fux9053ux8defux8f9bux70f7ux503cux4ee5ux53caux538bux7f29ux503cux4e4bux95f4ux7684ux51fdux6570ux5173ux7cfb}{%
+\section{Task 1:
+请用多元线性回归模型，描述制动马力和发动机转速、道路辛烷值以及压缩值之间的函数关系。}\label{task-1-ux8bf7ux7528ux591aux5143ux7ebfux6027ux56deux5f52ux6a21ux578bux63cfux8ff0ux5236ux52a8ux9a6cux529bux548cux53d1ux52a8ux673aux8f6cux901fux9053ux8defux8f9bux70f7ux503cux4ee5ux53caux538bux7f29ux503cux4e4bux95f4ux7684ux51fdux6570ux5173ux7cfb}}
+
+多元线性回归模型形如 \[
+y_i = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \beta_3 x_{3} + \epsilon_{i}, i=1,2,\cdots,n
+\]
+其中，\(\beta_0,\beta_1,\beta_2,\beta_3\)分别是未知参数，而\(\epsilon_{i}\)是误差项，且满足\(E(\epsilon_{i}) = 0\)和\(Var(\epsilon_{i}) = \sigma^2\)。\(n\)表示样本量。
+
+我们可以用矩阵的形式来写这个模型，即 \[
+\mathbf{y} = \mathbf{X}\mathbf{\beta} + \mathbf{\epsilon}
+\] 其中， - 响应变量构成的向量为\[
+\mathbf{y} = \begin{pmatrix}y_1\\y_2\\\vdots\\ y_n\end{pmatrix},
+\] - 自变量/特征构成的矩阵\[
+\mathbf{X} = \begin{pmatrix}
+1 & x_{11} & x_{12} \\
+1 & x_{21} & x_{22} \\
+\vdots & \vdots & \vdots \\
+1 & x_{n1} & x_{n2} \\
+\end{pmatrix},
+\] - 待估参数向量为 \[
+\mathbf{\beta} = \begin{pmatrix}
+\beta_0 \\ \beta_1 \\ \beta_2 \\ \beta_3
+\end{pmatrix},
+\] - 误差向量为 \[
+\mathbf{\epsilon} = \begin{pmatrix}\epsilon_1\\\epsilon_2\\\vdots\\ \epsilon_n\end{pmatrix}.
+\]
+
+    已知参数向量的估计为 \[
+\hat{\mathbf{\beta}} = (\mathbf{X}'\mathbf{X})^{-1} \mathbf{X}'\mathbf{y}.
+\]
+
+    \textbf{Solution:}\\
+使用多元线性回归的方法，令发动机转速为\(X_1\)，道路辛烷值为\(X_2\)，压缩值为\(X_3\)，制动马力为\(Y\)。则线性模型为：\(Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \beta_3X_3 +\epsilon\)，并假定随机误差项符合正态分布。根据以上数据，可以求得\(\hat{\beta_1},\hat{\beta_2},\hat{\beta_3}\)及线性回归方程如下。
+
+    \hypertarget{ux8bfeux4e0aux4ee3ux7801ux8fc1ux79fb}{%
+\subsection{课上代码迁移}\label{ux8bfeux4e0aux4ee3ux7801ux8fc1ux79fb}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{79}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} Method 1: Matrix Calculus}
+\PY{n}{Data1} \PY{o}{=} \PY{n}{sm}\PY{o}{.}\PY{n}{add\PYZus{}constant}\PY{p}{(}\PY{n}{Data}\PY{p}{)}
+\PY{n}{Data1\PYZus{}value} \PY{o}{=} \PY{n}{Data1}\PY{o}{.}\PY{n}{values}
+\PY{n}{X} \PY{o}{=} \PY{n}{Data1\PYZus{}value}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{p}{(}\PY{n}{p}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]}
+\PY{n}{y} \PY{o}{=} \PY{n}{Data1\PYZus{}value}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{beta\PYZus{}hat\PYZus{}1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{inv}\PY{p}{(}\PY{n}{X}\PY{o}{.}\PY{n}{T} \PY{o}{@} \PY{n}{X}\PY{p}{)} \PY{o}{@} \PY{p}{(}\PY{n}{X}\PY{o}{.}\PY{n}{T} \PY{o}{@} \PY{n}{y}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} A @ B \PYZlt{}=\PYZgt{} np.dot(A,B) matrix multiply}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The estimates of the parameters are }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+      \PY{n}{np}\PY{o}{.}\PY{n}{around}\PY{p}{(}\PY{n}{beta\PYZus{}hat\PYZus{}1}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The estimates of the parameters are
+ [-2.660312e+02  1.070000e-02  3.134800e+00  1.867400e+00]
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{80}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} Method 2: 「statsmodels」 package}
+\PY{n}{Data2} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Project\PYZus{}3.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 将列名中的空格改为下划线}
+\PY{n}{Data2} \PY{o}{=} \PY{n}{Data2}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Road Octane Number}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Road\PYZus{}Octane\PYZus{}Number}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Brake Horsepower}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Brake\PYZus{}Horsepower}\PY{l+s+s1}{\PYZsq{}}\PY{p}{\PYZcb{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 打印前几行数据，检查列名是否已更改}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{Data2}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+
+\PY{n}{model1} \PY{o}{=} \PY{n}{ols}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Brake\PYZus{}Horsepower \PYZti{} rpm + Road\PYZus{}Octane\PYZus{}Number + Compression}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{Data2}\PY{p}{)}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{p}{)}
+\PY{n}{beta\PYZus{}hat\PYZus{}2} \PY{o}{=} \PY{n}{model1}\PY{o}{.}\PY{n}{params}
+\PY{c+c1}{\PYZsh{}print(\PYZdq{}The estimates of the parameters are \PYZbs{}n\PYZdq{}, }
+\PY{c+c1}{\PYZsh{}      round(model.param(),4))}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The estimates of the parameters are }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+      \PY{n+nb}{round}\PY{p}{(}\PY{n}{beta\PYZus{}hat\PYZus{}2}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+    rpm  Road\_Octane\_Number  Compression  Brake\_Horsepower
+0  2000                  90          100               225
+1  1800                  94           95               212
+2  2400                  88          110               229
+3  1900                  91           96               222
+4  1600                  86          100               219
+The estimates of the parameters are
+ Intercept            -266.0312
+rpm                     0.0107
+Road\_Octane\_Number      3.1348
+Compression             1.8674
+dtype: float64
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{81}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} Method 3: 「scikit\PYZhy{}learn」package}
+\PY{n}{model2} \PY{o}{=} \PY{n}{linear\PYZus{}model}\PY{o}{.}\PY{n}{LinearRegression}\PY{p}{(}\PY{p}{)}
+\PY{n}{X\PYZus{}without\PYZus{}intercept} \PY{o}{=} \PY{n}{X}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{:}\PY{l+m+mi}{4}\PY{p}{]}
+\PY{n}{model2}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}without\PYZus{}intercept}\PY{p}{,} \PY{n}{y}\PY{p}{)}
+\PY{n}{beta\PYZus{}hat\PYZus{}3} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{model2}\PY{o}{.}\PY{n}{intercept\PYZus{}}\PY{p}{)}\PY{p}{,}\PY{n}{model2}\PY{o}{.}\PY{n}{coef\PYZus{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The estimates of the parameters are }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+      \PY{n}{np}\PY{o}{.}\PY{n}{around}\PY{p}{(}\PY{n}{beta\PYZus{}hat\PYZus{}3}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The estimates of the parameters are
+ [-2.660312e+02  1.070000e-02  3.134800e+00  1.867400e+00]
+    \end{Verbatim}
+
+    \hypertarget{ux81eaux5df1ux5c1dux8bd5}{%
+\subsection{自己尝试}\label{ux81eaux5df1ux5c1dux8bd5}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{82}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{stats} \PY{k}{as} \PY{n+nn}{stats}
+\PY{k+kn}{import} \PY{n+nn}{math}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Project\PYZus{}3.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{x}\PY{o}{.}\PY{n}{insert}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{intercept}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{)}\PY{p}{)} 
+\PY{n}{data} \PY{o}{=} \PY{n}{x}\PY{o}{.}\PY{n}{values} \PY{o}{*} \PY{l+m+mi}{1}
+\PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data}\PY{p}{,} \PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{intercept}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{F}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{df}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Do the multiple linear regression}
+\PY{n}{model} \PY{o}{=} \PY{n}{ols}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{F \PYZti{} P1 + P2 + P3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{df}\PY{p}{)}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{p}{)}
+\PY{n}{beta} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{params}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{参数估计值: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n+nb}{round}\PY{p}{(}\PY{n}{beta}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+\PY{n}{X} \PY{o}{=} \PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0} \PY{p}{:} \PY{n}{p} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{Y} \PY{o}{=} \PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{Y\PYZus{}hat} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{fittedvalues}
+\PY{n}{model}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+    intercept      P1    P2     P3      F
+0         1.0  2000.0  90.0  100.0  225.0
+1         1.0  1800.0  94.0   95.0  212.0
+2         1.0  2400.0  88.0  110.0  229.0
+3         1.0  1900.0  91.0   96.0  222.0
+4         1.0  1600.0  86.0  100.0  219.0
+5         1.0  2500.0  96.0  110.0  278.0
+6         1.0  3000.0  94.0   98.0  246.0
+7         1.0  3200.0  90.0  100.0  237.0
+8         1.0  2800.0  88.0  105.0  233.0
+9         1.0  3400.0  86.0   97.0  224.0
+10        1.0  1800.0  90.0  100.0  223.0
+11        1.0  2500.0  89.0  104.0  230.0
+参数估计值:
+ Intercept   -266.0312
+P1             0.0107
+P2             3.1348
+P3             1.8674
+dtype: float64
+    \end{Verbatim}
+ 
+            
+\prompt{Out}{outcolor}{82}{}
+    
+    \begin{center}
+\begin{tabular}{lclc}
+\toprule
+\textbf{Dep. Variable:}    &        F         & \textbf{  R-squared:         } &     0.807   \\
+\textbf{Model:}            &       OLS        & \textbf{  Adj. R-squared:    } &     0.734   \\
+\textbf{Method:}           &  Least Squares   & \textbf{  F-statistic:       } &     11.12   \\
+\textbf{Date:}             & Sat, 07 Oct 2023 & \textbf{  Prob (F-statistic):} &  0.00317    \\
+\textbf{Time:}             &     15:22:12     & \textbf{  Log-Likelihood:    } &   -40.708   \\
+\textbf{No. Observations:} &          12      & \textbf{  AIC:               } &     89.42   \\
+\textbf{Df Residuals:}     &           8      & \textbf{  BIC:               } &     91.36   \\
+\textbf{Df Model:}         &           3      & \textbf{                     } &             \\
+\textbf{Covariance Type:}  &    nonrobust     & \textbf{                     } &             \\
+\bottomrule
+\end{tabular}
+\begin{tabular}{lcccccc}
+                   & \textbf{coef} & \textbf{std err} & \textbf{t} & \textbf{P$> |$t$|$} & \textbf{[0.025} & \textbf{0.975]}  \\
+\midrule
+\textbf{Intercept} &    -266.0312  &       92.674     &    -2.871  &         0.021        &     -479.737    &      -52.325     \\
+\textbf{P1}        &       0.0107  &        0.004     &     2.390  &         0.044        &        0.000    &        0.021     \\
+\textbf{P2}        &       3.1348  &        0.844     &     3.712  &         0.006        &        1.188    &        5.082     \\
+\textbf{P3}        &       1.8674  &        0.535     &     3.494  &         0.008        &        0.635    &        3.100     \\
+\bottomrule
+\end{tabular}
+\begin{tabular}{lclc}
+\textbf{Omnibus:}       &  0.392 & \textbf{  Durbin-Watson:     } &    1.043  \\
+\textbf{Prob(Omnibus):} &  0.822 & \textbf{  Jarque-Bera (JB):  } &    0.230  \\
+\textbf{Skew:}          & -0.282 & \textbf{  Prob(JB):          } &    0.891  \\
+\textbf{Kurtosis:}      &  2.625 & \textbf{  Cond. No.          } & 9.03e+04  \\
+\bottomrule
+\end{tabular}
+%\caption{OLS Regression Results}
+\end{center}
+
+Notes: \newline
+ [1] Standard Errors assume that the covariance matrix of the errors is correctly specified. \newline
+ [2] The condition number is large, 9.03e+04. This might indicate that there are \newline
+ strong multicollinearity or other numerical problems.
+
+    
+
+    \hypertarget{ux7efcux4e0aux6240ux8ff0ux6211ux4eecux53efux4ee5ux8f93ux51faux591aux5143ux7ebfux6027ux56deux5f52ux65b9ux7a0b}{%
+\subsection{综上所述，我们可以输出多元线性回归方程}\label{ux7efcux4e0aux6240ux8ff0ux6211ux4eecux53efux4ee5ux8f93ux51faux591aux5143ux7ebfux6027ux56deux5f52ux65b9ux7a0b}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{83}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y\PYZus{}hat = }\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+s1}{ + (}\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+s1}{ * X1) + (}\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+s1}{ * X2) + (}\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+s1}{ * X3)}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{beta}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{beta}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{beta}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{beta}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Y\_hat = -266.03 + (0.01 * X1) + (3.13 * X2) + (1.87 * X3)
+    \end{Verbatim}
+
+    \hypertarget{task-2-ux5206ux522bux5c06ux6570ux636eux4e2dux5fc3ux5316ux6807ux51c6ux5316ux4e4bux540eux6bd4ux8f83ux53c2ux6570ux4f30ux8ba1ux7684ux5f02ux540cux5e76ux8fdbux884cux8bc4ux8ff0ux63d0ux793aux53efux4ee5ux7ed3ux5408ux7406ux8bbaux8bfeux7684ux8bfeux4ef6}{%
+\section{Task 2:
+分别将数据中心化、标准化之后，比较参数估计的异同，并进行评述（提示：可以结合理论课的课件）。}\label{task-2-ux5206ux522bux5c06ux6570ux636eux4e2dux5fc3ux5316ux6807ux51c6ux5316ux4e4bux540eux6bd4ux8f83ux53c2ux6570ux4f30ux8ba1ux7684ux5f02ux540cux5e76ux8fdbux884cux8bc4ux8ff0ux63d0ux793aux53efux4ee5ux7ed3ux5408ux7406ux8bbaux8bfeux7684ux8bfeux4ef6}}
+
+    \hypertarget{ux4e2dux5fc3ux5316}{%
+\subsection{中心化}\label{ux4e2dux5fc3ux5316}}
+
+    \hypertarget{ux8bfeux4e0aux4ee3ux7801}{%
+\subsubsection{课上代码}\label{ux8bfeux4e0aux4ee3ux7801}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{84}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{model1}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{84}{}
+    
+    \begin{center}
+\begin{tabular}{lclc}
+\toprule
+\textbf{Dep. Variable:}       & Brake\_Horsepower & \textbf{  R-squared:         } &     0.807   \\
+\textbf{Model:}               &        OLS        & \textbf{  Adj. R-squared:    } &     0.734   \\
+\textbf{Method:}              &   Least Squares   & \textbf{  F-statistic:       } &     11.12   \\
+\textbf{Date:}                &  Sat, 07 Oct 2023 & \textbf{  Prob (F-statistic):} &  0.00317    \\
+\textbf{Time:}                &      15:22:14     & \textbf{  Log-Likelihood:    } &   -40.708   \\
+\textbf{No. Observations:}    &           12      & \textbf{  AIC:               } &     89.42   \\
+\textbf{Df Residuals:}        &            8      & \textbf{  BIC:               } &     91.36   \\
+\textbf{Df Model:}            &            3      & \textbf{                     } &             \\
+\textbf{Covariance Type:}     &     nonrobust     & \textbf{                     } &             \\
+\bottomrule
+\end{tabular}
+\begin{tabular}{lcccccc}
+                              & \textbf{coef} & \textbf{std err} & \textbf{t} & \textbf{P$> |$t$|$} & \textbf{[0.025} & \textbf{0.975]}  \\
+\midrule
+\textbf{Intercept}            &    -266.0312  &       92.674     &    -2.871  &         0.021        &     -479.737    &      -52.325     \\
+\textbf{rpm}                  &       0.0107  &        0.004     &     2.390  &         0.044        &        0.000    &        0.021     \\
+\textbf{Road\_Octane\_Number} &       3.1348  &        0.844     &     3.712  &         0.006        &        1.188    &        5.082     \\
+\textbf{Compression}          &       1.8674  &        0.535     &     3.494  &         0.008        &        0.635    &        3.100     \\
+\bottomrule
+\end{tabular}
+\begin{tabular}{lclc}
+\textbf{Omnibus:}       &  0.392 & \textbf{  Durbin-Watson:     } &    1.043  \\
+\textbf{Prob(Omnibus):} &  0.822 & \textbf{  Jarque-Bera (JB):  } &    0.230  \\
+\textbf{Skew:}          & -0.282 & \textbf{  Prob(JB):          } &    0.891  \\
+\textbf{Kurtosis:}      &  2.625 & \textbf{  Cond. No.          } & 9.03e+04  \\
+\bottomrule
+\end{tabular}
+%\caption{OLS Regression Results}
+\end{center}
+
+Notes: \newline
+ [1] Standard Errors assume that the covariance matrix of the errors is correctly specified. \newline
+ [2] The condition number is large, 9.03e+04. This might indicate that there are \newline
+ strong multicollinearity or other numerical problems.
+
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{85}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}\PYZsh{} 中心化}
+\PY{n}{Data1} \PY{o}{=} \PY{n}{sm}\PY{o}{.}\PY{n}{add\PYZus{}constant}\PY{p}{(}\PY{n}{Data}\PY{p}{)}
+\PY{n}{Data1\PYZus{}value} \PY{o}{=} \PY{n}{Data1}\PY{o}{.}\PY{n}{values}
+\PY{n}{X} \PY{o}{=} \PY{n}{Data1\PYZus{}value}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{:}\PY{p}{(}\PY{n}{p}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]}
+\PY{n}{y} \PY{o}{=} \PY{n}{Data1\PYZus{}value}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{X\PYZus{}center} \PY{o}{=} \PY{n}{preprocessing}\PY{o}{.}\PY{n}{scale}\PY{p}{(}\PY{n}{X\PYZus{}without\PYZus{}intercept}\PY{p}{,} \PY{n}{with\PYZus{}mean} \PY{o}{=} \PY{k+kc}{True}\PY{p}{,} \PY{n}{with\PYZus{}std}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+\PY{n}{y\PYZus{}center} \PY{o}{=} \PY{n}{preprocessing}\PY{o}{.}\PY{n}{scale}\PY{p}{(}\PY{n}{y}\PY{p}{,} \PY{n}{with\PYZus{}mean} \PY{o}{=} \PY{k+kc}{True}\PY{p}{,} \PY{n}{with\PYZus{}std}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} with\PYZus{}mean = True (default), with\PYZus{}std = True (default)}
+
+\PY{c+c1}{\PYZsh{} print(X\PYZus{}center) }
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The sample means of centered features are }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{around}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{X\PYZus{}center}\PY{p}{,}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The sample mean of centered response is }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{around}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{y\PYZus{}center}\PY{p}{,}\PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The sample means of centered features are  [-0. -0.  0.]
+The sample mean of centered response is  0.0
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{86}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{model3} \PY{o}{=} \PY{n}{linear\PYZus{}model}\PY{o}{.}\PY{n}{LinearRegression}\PY{p}{(}\PY{p}{)}
+\PY{n}{model3}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}center}\PY{p}{,} \PY{n}{y\PYZus{}center}\PY{p}{)}
+\PY{n}{beta\PYZus{}hat\PYZus{}4} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{model3}\PY{o}{.}\PY{n}{intercept\PYZus{}}\PY{p}{)}\PY{p}{,}\PY{n}{model3}\PY{o}{.}\PY{n}{coef\PYZus{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The estimates of the parameters are }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+          \PY{n}{np}\PY{o}{.}\PY{n}{around}\PY{p}{(}\PY{n}{beta\PYZus{}hat\PYZus{}4}\PY{p}{,}\PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The estimates of the parameters are
+ [0.     0.0107 3.1348 1.8674]
+    \end{Verbatim}
+
+    \hypertarget{ux81eaux5df1ux5c1dux8bd5}{%
+\subsubsection{自己尝试}\label{ux81eaux5df1ux5c1dux8bd5}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{87}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{X} \PY{o}{=} \PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0} \PY{p}{:} \PY{n}{p} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{Y} \PY{o}{=} \PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+\PY{c+c1}{\PYZsh{} 求均值}
+\PY{n}{X\PYZus{}mean} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{p} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+    \PY{n}{X\PYZus{}mean}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n}{k}\PY{p}{]}\PY{p}{)}\PY{p}{)}  \PY{c+c1}{\PYZsh{} 自变量 x 的均值}
+\PY{n}{Y\PYZus{}mean} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}  \PY{c+c1}{\PYZsh{} 因变量 y 的均值}
+
+\PY{c+c1}{\PYZsh{} 数据中心化}
+\PY{n}{X\PYZus{}cent} \PY{o}{=} \PY{n}{X} \PY{o}{\PYZhy{}} \PY{n}{X\PYZus{}mean}
+\PY{n}{Y\PYZus{}cent} \PY{o}{=} \PY{n}{Y} \PY{o}{\PYZhy{}} \PY{n}{Y\PYZus{}mean}
+
+\PY{c+c1}{\PYZsh{} Do the multiple linear regression}
+\PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{X\PYZus{}cent}\PY{p}{,} \PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{intercept\PYZus{}cent}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P1\PYZus{}cent}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P2\PYZus{}cent}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P3\PYZus{}cent}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{F\PYZus{}cent}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{Y\PYZus{}cent}
+\PY{n}{model\PYZus{}cent} \PY{o}{=} \PY{n}{ols}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{F\PYZus{}cent \PYZti{} P1\PYZus{}cent + P2\PYZus{}cent + P3\PYZus{}cent}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{df}\PY{p}{)}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{p}{)}
+\PY{n}{beta\PYZus{}cent} \PY{o}{=} \PY{n}{model\PYZus{}cent}\PY{o}{.}\PY{n}{params}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{参数估计值: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n+nb}{round}\PY{p}{(}\PY{n}{beta\PYZus{}cent}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+\PY{n}{Y\PYZus{}hat\PYZus{}cent} \PY{o}{=} \PY{n}{model\PYZus{}cent}\PY{o}{.}\PY{n}{fittedvalues}
+\PY{n}{model\PYZus{}cent}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+参数估计值:
+ Intercept    0.0000
+P1\_cent      0.0107
+P2\_cent      3.1348
+P3\_cent      1.8674
+dtype: float64
+    \end{Verbatim}
+ 
+            
+\prompt{Out}{outcolor}{87}{}
+    
+    \begin{center}
+\begin{tabular}{lclc}
+\toprule
+\textbf{Dep. Variable:}    &     F\_cent      & \textbf{  R-squared:         } &     0.807   \\
+\textbf{Model:}            &       OLS        & \textbf{  Adj. R-squared:    } &     0.734   \\
+\textbf{Method:}           &  Least Squares   & \textbf{  F-statistic:       } &     11.12   \\
+\textbf{Date:}             & Sat, 07 Oct 2023 & \textbf{  Prob (F-statistic):} &  0.00317    \\
+\textbf{Time:}             &     15:22:16     & \textbf{  Log-Likelihood:    } &   -40.708   \\
+\textbf{No. Observations:} &          12      & \textbf{  AIC:               } &     89.42   \\
+\textbf{Df Residuals:}     &           8      & \textbf{  BIC:               } &     91.36   \\
+\textbf{Df Model:}         &           3      & \textbf{                     } &             \\
+\textbf{Covariance Type:}  &    nonrobust     & \textbf{                     } &             \\
+\bottomrule
+\end{tabular}
+\begin{tabular}{lcccccc}
+                   & \textbf{coef} & \textbf{std err} & \textbf{t} & \textbf{P$> |$t$|$} & \textbf{[0.025} & \textbf{0.975]}  \\
+\midrule
+\textbf{Intercept} &     1.11e-16  &        2.544     &  4.36e-17  &         1.000        &       -5.866    &        5.866     \\
+\textbf{P1\_cent}  &       0.0107  &        0.004     &     2.390  &         0.044        &        0.000    &        0.021     \\
+\textbf{P2\_cent}  &       3.1348  &        0.844     &     3.712  &         0.006        &        1.188    &        5.082     \\
+\textbf{P3\_cent}  &       1.8674  &        0.535     &     3.494  &         0.008        &        0.635    &        3.100     \\
+\bottomrule
+\end{tabular}
+\begin{tabular}{lclc}
+\textbf{Omnibus:}       &  0.392 & \textbf{  Durbin-Watson:     } &    1.043  \\
+\textbf{Prob(Omnibus):} &  0.822 & \textbf{  Jarque-Bera (JB):  } &    0.230  \\
+\textbf{Skew:}          & -0.282 & \textbf{  Prob(JB):          } &    0.891  \\
+\textbf{Kurtosis:}      &  2.625 & \textbf{  Cond. No.          } &     574.  \\
+\bottomrule
+\end{tabular}
+%\caption{OLS Regression Results}
+\end{center}
+
+Notes: \newline
+ [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+    
+
+    \hypertarget{ux8f93ux51faux4e2dux5fc3ux5316ux540eux7684ux591aux5143ux7ebfux6027ux56deux5f52ux65b9ux7a0b}{%
+\subsubsection{输出中心化后的多元线性回归方程}\label{ux8f93ux51faux4e2dux5fc3ux5316ux540eux7684ux591aux5143ux7ebfux6027ux56deux5f52ux65b9ux7a0b}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{88}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y\PYZus{}hat\PYZus{}cent = }\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+s1}{ + (}\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+s1}{ * X1\PYZus{}cent) + (}\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+s1}{ * X2\PYZus{}cent) + (}\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+s1}{ * X3\PYZus{}cent)}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{beta\PYZus{}cent}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{beta\PYZus{}cent}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{beta\PYZus{}cent}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{beta\PYZus{}cent}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Y\_hat\_cent = 0.00 + (0.01 * X1\_cent) + (3.13 * X2\_cent) + (1.87 * X3\_cent)
+    \end{Verbatim}
+
+    \hypertarget{ux901aux8fc7ux5bf9ux6bd4ux6570ux636eux4e2dux5fc3ux5316ux524dux540eux7684ux7ed3ux679cux6211ux4eecux53efux4ee5ux53d1ux73b0ux5bf9ux6570ux636eux8fdbux884cux4e2dux5fc3ux5316ux4e4bux540eux56deux5f52ux5e38ux6570ux53d8ux4e3a-0ux800cux56deux5f52ux7cfbux6570ux503cux672aux6539ux53d8}{%
+\subsubsection{通过对比数据中心化前后的结果，我们可以发现，对数据进行中心化之后回归常数变为
+0，而回归系数值未改变。}\label{ux901aux8fc7ux5bf9ux6bd4ux6570ux636eux4e2dux5fc3ux5316ux524dux540eux7684ux7ed3ux679cux6211ux4eecux53efux4ee5ux53d1ux73b0ux5bf9ux6570ux636eux8fdbux884cux4e2dux5fc3ux5316ux4e4bux540eux56deux5f52ux5e38ux6570ux53d8ux4e3a-0ux800cux56deux5f52ux7cfbux6570ux503cux672aux6539ux53d8}}
+
+\textbf{回归常数变为0的原因}是中心化的过程中，自变量 X
+被减去了它们的均值，这样在回归模型中，截距项对应的是因变量Y在所有自变量均为均值时的预测值，因此截距项会变为0。
+
+\textbf{回归系数值未改变的原因}是中心化不会改变自变量之间的相对关系，因此回归系数的值保持不变。
+
+中心化主要的作用是消除了截距项与自变量之间的关系，使模型更容易解释，但不会影响自变量对因变量的影响程度。模型中的回归系数仍然表示每个自变量对因变量的影响大小，只是解释上更容易理解。
+
+    \hypertarget{ux6807ux51c6ux5316}{%
+\subsection{标准化}\label{ux6807ux51c6ux5316}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{89}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{X} \PY{o}{=} \PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0} \PY{p}{:} \PY{n}{p} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{Y} \PY{o}{=} \PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+\PY{c+c1}{\PYZsh{} 求均值}
+\PY{n}{X\PYZus{}mean} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{p} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+    \PY{n}{X\PYZus{}mean}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n}{k}\PY{p}{]}\PY{p}{)}\PY{p}{)}  \PY{c+c1}{\PYZsh{} 自变量 x 的均值}
+\PY{n}{Y\PYZus{}mean} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}  \PY{c+c1}{\PYZsh{} 因变量 y 的均值}
+
+\PY{c+c1}{\PYZsh{} 标准化}
+\PY{n}{X\PYZus{}std} \PY{o}{=} \PY{p}{(}\PY{n}{X} \PY{o}{\PYZhy{}} \PY{n}{X\PYZus{}mean}\PY{p}{)} \PY{o}{/} \PY{n}{np}\PY{o}{.}\PY{n}{std}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+\PY{n}{Y\PYZus{}std} \PY{o}{=} \PY{p}{(}\PY{n}{Y} \PY{o}{\PYZhy{}} \PY{n}{Y\PYZus{}mean}\PY{p}{)} \PY{o}{/} \PY{n}{np}\PY{o}{.}\PY{n}{std}\PY{p}{(}\PY{n}{Y}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Do the multiple linear regression}
+\PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{X\PYZus{}std}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{intercept\PYZus{}std}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P1\PYZus{}std}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P2\PYZus{}std}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P3\PYZus{}std}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{F\PYZus{}std}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{Y\PYZus{}std}
+\PY{n}{model\PYZus{}std} \PY{o}{=} \PY{n}{ols}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{F\PYZus{}std \PYZti{} P1\PYZus{}std + P2\PYZus{}std + P3\PYZus{}std}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{df}\PY{p}{)}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{p}{)}
+\PY{n}{beta\PYZus{}std} \PY{o}{=} \PY{n}{model\PYZus{}std}\PY{o}{.}\PY{n}{params}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{参数估计值: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n+nb}{round}\PY{p}{(}\PY{n}{beta\PYZus{}std}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+\PY{n}{Y\PYZus{}hat\PYZus{}std} \PY{o}{=} \PY{n}{model\PYZus{}std}\PY{o}{.}\PY{n}{fittedvalues}
+\PY{n}{model\PYZus{}std}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+参数估计值:
+ Intercept    0.0000
+P1\_std       0.3757
+P2\_std       0.5793
+P3\_std       0.5477
+dtype: float64
+    \end{Verbatim}
+ 
+            
+\prompt{Out}{outcolor}{89}{}
+    
+    \begin{center}
+\begin{tabular}{lclc}
+\toprule
+\textbf{Dep. Variable:}    &      F\_std      & \textbf{  R-squared:         } &     0.807   \\
+\textbf{Model:}            &       OLS        & \textbf{  Adj. R-squared:    } &     0.734   \\
+\textbf{Method:}           &  Least Squares   & \textbf{  F-statistic:       } &     11.12   \\
+\textbf{Date:}             & Sat, 07 Oct 2023 & \textbf{  Prob (F-statistic):} &  0.00317    \\
+\textbf{Time:}             &     15:22:18     & \textbf{  Log-Likelihood:    } &   -7.1718   \\
+\textbf{No. Observations:} &          12      & \textbf{  AIC:               } &     22.34   \\
+\textbf{Df Residuals:}     &           8      & \textbf{  BIC:               } &     24.28   \\
+\textbf{Df Model:}         &           3      & \textbf{                     } &             \\
+\textbf{Covariance Type:}  &    nonrobust     & \textbf{                     } &             \\
+\bottomrule
+\end{tabular}
+\begin{tabular}{lcccccc}
+                   & \textbf{coef} & \textbf{std err} & \textbf{t} & \textbf{P$> |$t$|$} & \textbf{[0.025} & \textbf{0.975]}  \\
+\midrule
+\textbf{Intercept} &    1.735e-17  &        0.156     &  1.12e-16  &         1.000        &       -0.359    &        0.359     \\
+\textbf{P1\_std}   &       0.3757  &        0.157     &     2.390  &         0.044        &        0.013    &        0.738     \\
+\textbf{P2\_std}   &       0.5793  &        0.156     &     3.712  &         0.006        &        0.219    &        0.939     \\
+\textbf{P3\_std}   &       0.5477  &        0.157     &     3.494  &         0.008        &        0.186    &        0.909     \\
+\bottomrule
+\end{tabular}
+\begin{tabular}{lclc}
+\textbf{Omnibus:}       &  0.392 & \textbf{  Durbin-Watson:     } &    1.043  \\
+\textbf{Prob(Omnibus):} &  0.822 & \textbf{  Jarque-Bera (JB):  } &    0.230  \\
+\textbf{Skew:}          & -0.282 & \textbf{  Prob(JB):          } &    0.891  \\
+\textbf{Kurtosis:}      &  2.625 & \textbf{  Cond. No.          } &     1.16  \\
+\bottomrule
+\end{tabular}
+%\caption{OLS Regression Results}
+\end{center}
+
+Notes: \newline
+ [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+    
+
+    \hypertarget{ux8f93ux51faux6807ux51c6ux5316ux540eux7684ux591aux5143ux7ebfux6027ux56deux5f52ux65b9ux7a0b}{%
+\subsubsection{输出标准化后的多元线性回归方程}\label{ux8f93ux51faux6807ux51c6ux5316ux540eux7684ux591aux5143ux7ebfux6027ux56deux5f52ux65b9ux7a0b}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{90}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Y\PYZus{}hat\PYZus{}std = }\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+s1}{ + (}\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+s1}{ * X1\PYZus{}std) + (}\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+s1}{ * X2\PYZus{}std) + (}\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+s1}{ * X3\PYZus{}std)}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{beta\PYZus{}std}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{beta\PYZus{}std}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{beta\PYZus{}std}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{beta\PYZus{}std}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Y\_hat\_std = 0.00 + (0.38 * X1\_std) + (0.58 * X2\_std) + (0.55 * X3\_std)
+    \end{Verbatim}
+
+    \hypertarget{ux901aux8fc7ux5bf9ux6bd4ux6570ux636eux6807ux51c6ux5316ux524dux540eux7684ux7ed3ux679cux6211ux4eecux53efux4ee5ux53d1ux73b0ux53c2ux6570ux7684ux6b63ux8d1fux53f7ux4e0dux53d8ux5927ux5c0fux548cux539fux6765ux7684ux53c2ux6570ux4e4bux95f4ux5b58ux5728ux5173ux7cfb}{%
+\subsubsection{通过对比数据标准化前后的结果，我们可以发现，参数的正负号不变、大小和原来的参数之间存在关系}\label{ux901aux8fc7ux5bf9ux6bd4ux6570ux636eux6807ux51c6ux5316ux524dux540eux7684ux7ed3ux679cux6211ux4eecux53efux4ee5ux53d1ux73b0ux53c2ux6570ux7684ux6b63ux8d1fux53f7ux4e0dux53d8ux5927ux5c0fux548cux539fux6765ux7684ux53c2ux6570ux4e4bux95f4ux5b58ux5728ux5173ux7cfb}}
+
+\textbf{参数的正负号不变的原因}是标准化数据不会改变自变量之间的相对关系，因此回归系数的方向（正负号）仍然保持不变。
+
+\textbf{大小和原来的参数之间存在关系的原因}标准化后的回归系数可以直接比较各自变量对因变量的影响程度。如果自变量的取值范围差异较大，标准化后的回归系数可以用来衡量它们的相对影响。标准化后的回归系数表示因变量
+Y 在单位标准差变化下对每个自变量的变化量。
+
+    \hypertarget{task-3-ux4eceux6a21ux578bux663eux8457ux6027ux53c2ux6570ux663eux8457ux6027ux4ee5ux53caux6b8bux5deeux5206ux6790ux4e09ux4e2aux89d2ux5ea6ux5206ux6790ux591aux5143ux7ebfux6027ux56deux5f52ux6a21ux578bux662fux5426ux5408ux7406}{%
+\section{Task 3:
+从模型显著性、参数显著性以及残差分析三个角度，分析多元线性回归模型是否合理。}\label{task-3-ux4eceux6a21ux578bux663eux8457ux6027ux53c2ux6570ux663eux8457ux6027ux4ee5ux53caux6b8bux5deeux5206ux6790ux4e09ux4e2aux89d2ux5ea6ux5206ux6790ux591aux5143ux7ebfux6027ux56deux5f52ux6a21ux578bux662fux5426ux5408ux7406}}
+
+    \hypertarget{ux6a21ux578bux663eux8457ux6027ux548cux53c2ux6570ux663eux8457ux6027}{%
+\subsubsection{1、模型显著性和参数显著性}\label{ux6a21ux578bux663eux8457ux6027ux548cux53c2ux6570ux663eux8457ux6027}}
+
+    \hypertarget{ux8bfeux4e0aux4ee3ux7801}{%
+\paragraph{课上代码}\label{ux8bfeux4e0aux4ee3ux7801}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{91}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{model1}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+ 
+            
+\prompt{Out}{outcolor}{91}{}
+    
+    \begin{center}
+\begin{tabular}{lclc}
+\toprule
+\textbf{Dep. Variable:}       & Brake\_Horsepower & \textbf{  R-squared:         } &     0.807   \\
+\textbf{Model:}               &        OLS        & \textbf{  Adj. R-squared:    } &     0.734   \\
+\textbf{Method:}              &   Least Squares   & \textbf{  F-statistic:       } &     11.12   \\
+\textbf{Date:}                &  Sat, 07 Oct 2023 & \textbf{  Prob (F-statistic):} &  0.00317    \\
+\textbf{Time:}                &      15:22:21     & \textbf{  Log-Likelihood:    } &   -40.708   \\
+\textbf{No. Observations:}    &           12      & \textbf{  AIC:               } &     89.42   \\
+\textbf{Df Residuals:}        &            8      & \textbf{  BIC:               } &     91.36   \\
+\textbf{Df Model:}            &            3      & \textbf{                     } &             \\
+\textbf{Covariance Type:}     &     nonrobust     & \textbf{                     } &             \\
+\bottomrule
+\end{tabular}
+\begin{tabular}{lcccccc}
+                              & \textbf{coef} & \textbf{std err} & \textbf{t} & \textbf{P$> |$t$|$} & \textbf{[0.025} & \textbf{0.975]}  \\
+\midrule
+\textbf{Intercept}            &    -266.0312  &       92.674     &    -2.871  &         0.021        &     -479.737    &      -52.325     \\
+\textbf{rpm}                  &       0.0107  &        0.004     &     2.390  &         0.044        &        0.000    &        0.021     \\
+\textbf{Road\_Octane\_Number} &       3.1348  &        0.844     &     3.712  &         0.006        &        1.188    &        5.082     \\
+\textbf{Compression}          &       1.8674  &        0.535     &     3.494  &         0.008        &        0.635    &        3.100     \\
+\bottomrule
+\end{tabular}
+\begin{tabular}{lclc}
+\textbf{Omnibus:}       &  0.392 & \textbf{  Durbin-Watson:     } &    1.043  \\
+\textbf{Prob(Omnibus):} &  0.822 & \textbf{  Jarque-Bera (JB):  } &    0.230  \\
+\textbf{Skew:}          & -0.282 & \textbf{  Prob(JB):          } &    0.891  \\
+\textbf{Kurtosis:}      &  2.625 & \textbf{  Cond. No.          } & 9.03e+04  \\
+\bottomrule
+\end{tabular}
+%\caption{OLS Regression Results}
+\end{center}
+
+Notes: \newline
+ [1] Standard Errors assume that the covariance matrix of the errors is correctly specified. \newline
+ [2] The condition number is large, 9.03e+04. This might indicate that there are \newline
+ strong multicollinearity or other numerical problems.
+
+    
+
+    从上表可知， -
+\(F\)检验统计量可以计算为11.12，其\(p\)值为\(0.00317\)。因此，我们认为回归模型是有意义的。
+- 对于不同的特征，\(t\)检验统计量分别为\$2.390和\(3.712\)和\$3.494
+\(，其\)p\$值均不大于\$0.05 。因此，我们认为这三个特征都是有意义的。
+
+    \hypertarget{ux81eaux5df1ux5b9eux8df5}{%
+\subsubsection{自己实践}\label{ux81eaux5df1ux5b9eux8df5}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{92}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 求解相关项}
+\PY{n}{SSE} \PY{o}{=} \PY{n+nb}{sum}\PY{p}{(}\PY{p}{(}\PY{n}{Y} \PY{o}{\PYZhy{}} \PY{n}{Y\PYZus{}hat}\PY{p}{)} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{SST} \PY{o}{=} \PY{n+nb}{sum}\PY{p}{(}\PY{p}{(}\PY{n}{Y} \PY{o}{\PYZhy{}} \PY{n}{Y\PYZus{}mean}\PY{p}{)} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2}\PY{p}{)}
+\PY{n}{SSR} \PY{o}{=} \PY{n+nb}{sum}\PY{p}{(}\PY{p}{(}\PY{n}{Y\PYZus{}hat} \PY{o}{\PYZhy{}} \PY{n}{Y\PYZus{}mean}\PY{p}{)} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2}\PY{p}{)}
+
+\PY{n}{sigma2} \PY{o}{=} \PY{n}{SSE} \PY{o}{/} \PY{p}{(}\PY{n}{n} \PY{o}{\PYZhy{}} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)}  \PY{c+c1}{\PYZsh{} 方差}
+\PY{n}{sigma} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{sigma2}\PY{p}{)}  \PY{c+c1}{\PYZsh{} 标准差}
+
+\PY{n}{c} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{X}\PY{o}{.}\PY{n}{T}\PY{p}{,} \PY{n}{X}\PY{p}{)}
+\PY{n}{C} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{inv}\PY{p}{(}\PY{n}{c}\PY{p}{)}  \PY{c+c1}{\PYZsh{} 求逆}
+\PY{c+c1}{\PYZsh{} print(C)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \textbf{多元线性模型的显著性检验------F 检验:}\\
+检验假设：\(H_0: \beta_1=\beta_2=\beta_3=0\) vs
+\(H_1: \exists \beta_i \neq 0,i=1,2,3\)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{93}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 计算F0}
+\PY{n}{F0} \PY{o}{=} \PY{p}{(}\PY{n}{SSR} \PY{o}{/} \PY{n}{p}\PY{p}{)} \PY{o}{/} \PY{p}{(}\PY{n}{SSE} \PY{o}{/} \PY{p}{(}\PY{n}{n} \PY{o}{\PYZhy{}} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} F0 = model.fvalue}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{F0: }\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{n}{F0}\PY{p}{)}
+\PY{n}{F} \PY{o}{=} \PY{n+nb}{round}\PY{p}{(}\PY{n}{f}\PY{o}{.}\PY{n}{ppf}\PY{p}{(}\PY{l+m+mf}{0.95}\PY{p}{,} \PY{n}{dfn} \PY{o}{=} \PY{n}{p}\PY{p}{,} \PY{n}{dfd} \PY{o}{=} \PY{n}{n} \PY{o}{\PYZhy{}} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 法1：}
+\PY{n}{pVal1} \PY{o}{=} \PY{n}{f}\PY{o}{.}\PY{n}{sf}\PY{p}{(}\PY{n}{F0}\PY{p}{,} \PY{n}{p}\PY{p}{,} \PY{n}{n} \PY{o}{\PYZhy{}} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} pVal1 = model.f\PYZus{}pvalue}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{pVal1: }\PY{l+s+si}{\PYZpc{}.5f}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{n}{pVal1}\PY{p}{)}
+\PY{k}{if} \PY{n}{pVal1} \PY{o}{\PYZlt{}} \PY{n}{alpha}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{Since p\PYZhy{}value \PYZlt{} 0.05, reject H0.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{k}{else}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{Accept H0.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} 
+
+\PY{c+c1}{\PYZsh{} 法2：}
+\PY{k}{if} \PY{n}{F0} \PY{o}{\PYZgt{}} \PY{n}{F}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Since F0 \PYZgt{} F(0.95, 3, 8) = }\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+s1}{, reject H0.}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{n}{F}\PY{p}{)}
+\PY{k}{else}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Accept H0.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} 
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+F0: 11.12
+pVal1: 0.00317
+
+Since p-value < 0.05, reject H0.
+Since F0 > F(0.95, 3, 8) = 4.07, reject H0.
+    \end{Verbatim}
+
+    由 F 检验结果可知，该回归方程是显著的。
+
+    \textbf{多元线性模型的显著性检验------t 检验:}\\
+检验假设：\(H_{0j}: \beta_j=0\) vs \(H_{1j}: \beta_j \neq 0,j=1,2,3\)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{94}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} t检验}
+\PY{n}{t0} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{p} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}   
+    \PY{n}{t0}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{beta}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{/} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{C}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{*} \PY{n}{sigma2}\PY{p}{)}\PY{p}{)}\PY{p}{)}  \PY{c+c1}{\PYZsh{} 求t值}
+\PY{c+c1}{\PYZsh{} t0 = model.tvalues}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{t0值为：}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{n}{t0}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+\PY{n}{tVal} \PY{o}{=} \PY{n}{t}\PY{o}{.}\PY{n}{ppf}\PY{p}{(}\PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{alpha} \PY{o}{/} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{n} \PY{o}{\PYZhy{}} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{t的临界值为：}\PY{l+s+si}{\PYZpc{}.4f}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{n}{tVal}\PY{p}{)}
+\PY{n}{pVal2} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{p} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+    \PY{n}{P} \PY{o}{=} \PY{n}{t}\PY{o}{.}\PY{n}{sf}\PY{p}{(}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{t0}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}\PY{p}{,} \PY{n}{n} \PY{o}{\PYZhy{}} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)}
+    \PY{n}{pVal2}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{P}\PY{p}{)}  \PY{c+c1}{\PYZsh{} 已知临界值求p值}
+\PY{c+c1}{\PYZsh{} pVal2 = model.pvalues / 2}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P值为：}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{n}{pVal2}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} 法1：}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{pVal2}\PY{p}{[}\PY{n}{i} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{]} \PY{o}{\PYZlt{}} \PY{n}{alpha}\PY{p}{:}
+        \PY{n+nb}{print} \PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Since p}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s1}{\PYZhy{}value \PYZlt{} 0.05, reject H0}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{i} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{i} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+    \PY{k}{else}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Accept H0}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{i} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}   
+
+\PY{c+c1}{\PYZsh{} 法2：}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n+nb}{abs}\PY{p}{(}\PY{n}{t0}\PY{p}{[}\PY{n}{i} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZgt{}} \PY{n}{tVal}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Since t0}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s1}{ \PYZgt{} t(0.975, 8) = }\PY{l+s+si}{\PYZpc{}.4f}\PY{l+s+s1}{, reject H0}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{i} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{tVal}\PY{p}{,} \PY{n}{i} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+    \PY{k}{else}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Accept H0}\PY{l+s+si}{\PYZpc{}d}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{p}{(}\PY{n}{i} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)} 
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+t0值为： [-2.8706  2.3896  3.7123  3.4936]
+t的临界值为：2.3060
+P值为： [0.0104 0.0219 0.003  0.0041]
+
+
+Since p1-value < 0.05, reject H01.
+Since p2-value < 0.05, reject H02.
+Since p3-value < 0.05, reject H03.
+
+
+Since t01 > t(0.975, 8) = 2.3060, reject H01
+Since t02 > t(0.975, 8) = 2.3060, reject H02
+Since t03 > t(0.975, 8) = 2.3060, reject H03
+    \end{Verbatim}
+
+    由 t 检验结果可知，各回归系数都是显著的。
+
+    \textbf{复相关系数（可决系数）的检验:}
+
+    定义样本决定系数为 \[
+R^{2}=\frac{S S_{R}}{S S_{T}}=1-\frac{S S_{E}}{S S_{T}}
+\]
+
+    \(R^{2}\) 的取值在 {[}0,1{]} 区间内。
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(R^{2}\) 越接近 \(1,\) 表明回归拟合的效果越好。
+\item
+  \(R^{2}\) 越接近 \(0,\) 表明回归拟合的效果越差。
+\end{enumerate}
+
+    调整可决系数：
+
+\[R_{a}^{2}=1-\frac{n-1}{n-m-1}\left(1-R^{2}\right)\]
+
+随着变量个数上升，\(R^{2}\)会增大而影响决定系数的准确度，所以引入惩罚项加以修正，称之
+\(adjusted R^{2}\)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{95}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 可决系数}
+\PY{n}{R2} \PY{o}{=} \PY{n}{SSR} \PY{o}{/} \PY{n}{SST}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{可决系数：}\PY{l+s+si}{\PYZpc{}.4f}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{n}{R2}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} 调整可决系数}
+\PY{n}{R2c} \PY{o}{=} \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{p}{(}\PY{n}{SSE}\PY{o}{/}\PY{p}{(}\PY{n}{n}\PY{o}{\PYZhy{}}\PY{n}{p}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)} \PY{o}{/} \PY{p}{(}\PY{n}{SST}\PY{o}{/}\PY{p}{(}\PY{n}{n}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{调整可决系数Ra：}\PY{l+s+si}{\PYZpc{}.4f}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{n}{R2c}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+可决系数：0.8065
+调整可决系数Ra：0.7340
+    \end{Verbatim}
+
+    由于复相关系数（可决系数）值接近1，可以说明整体上
+\(X_1\),\(X_2\),\(X_3\)与 \(Y\) 呈线性关系。
+
+    \hypertarget{ux6b8bux5deeux5206ux6790}{%
+\subsubsection{2、残差分析}\label{ux6b8bux5deeux5206ux6790}}
+
+    \hypertarget{ux8ba1ux7b97brake_horsepowerux7684ux6b8bux5dee}{%
+\subsubsection{计算Brake\_Horsepower的残差}\label{ux8ba1ux7b97brake_horsepowerux7684ux6b8bux5dee}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{96}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 计算制动马力的残差}
+\PY{n}{data\PYZus{}res} \PY{o}{=} \PY{n}{data} \PY{o}{*} \PY{l+m+mf}{1.0}  \PY{c+c1}{\PYZsh{} 乘1.0 不然会损失精度}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{n}\PY{p}{)}\PY{p}{:}
+    \PY{n}{data\PYZus{}res}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n}{p} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{]} \PY{o}{=} \PY{n}{Y} \PY{o}{\PYZhy{}} \PY{n}{Y\PYZus{}hat}
+\PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data\PYZus{}res}\PY{p}{,} \PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{intercept}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{F\PYZus{}res}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{res} \PY{o}{=} \PY{n}{data\PYZus{}res}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n}{p} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{]}
+\PY{c+c1}{\PYZsh{} res = model.resid}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{df}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+   intercept      P1    P2     P3      F\_res
+0        1.0  2000.0  90.0  100.0   0.731289
+1        1.0  1800.0  94.0   95.0 -13.328247
+2        1.0  2400.0  88.0  110.0 -11.958476
+3        1.0  1900.0  91.0   96.0   3.137442
+4        1.0  1600.0  86.0  100.0  11.555798
+    \end{Verbatim}
+
+    \hypertarget{ux6b8bux5deeux7684ux6b63ux6001ux6982ux7387ux56fe}{%
+\subsubsection{残差的正态概率图}\label{ux6b8bux5deeux7684ux6b63ux6001ux6982ux7387ux56fe}}
+
+使用残差正态概率图可验证残差呈正态分布的假设。残差的正态概率图应该大致为一条直线。
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{97}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 残差的正态概率图}
+\PY{n}{osm}\PY{p}{,} \PY{n}{osr} \PY{o}{=} \PY{n}{stats}\PY{o}{.}\PY{n}{probplot}\PY{p}{(}\PY{n}{res}\PY{p}{,} \PY{n}{dist} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{norm}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{plot} \PY{o}{=} \PY{n}{plt}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{osm}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\PY{n}{y} \PY{o}{=} \PY{n}{osm}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\PY{n}{plt}\PY{o}{.}\PY{n}{text}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZpc{}.2f}\PY{l+s+s1}{\PYZsq{}} \PY{o}{\PYZpc{}} \PY{n+nb}{float}\PY{p}{(}\PY{n}{y}\PY{p}{)}\PY{p}{,} \PY{n}{ha}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{center}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{va}\PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bottom}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{9}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_56_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{98}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 异常值检验}
+\PY{n}{MSE} \PY{o}{=} \PY{n}{SSE} \PY{o}{/} \PY{p}{(}\PY{n}{n} \PY{o}{\PYZhy{}} \PY{n}{p} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} MSE = model.mse\PYZus{}resid}
+\PY{n}{d} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{abs}\PY{p}{(}\PY{n}{y}\PY{p}{)} \PY{o}{/} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{MSE}\PY{p}{)}
+\PY{k}{if} \PY{n}{d} \PY{o}{\PYZlt{}} \PY{l+m+mi}{3}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{残差}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n+nb}{round}\PY{p}{(}\PY{n}{y}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{不是异常值.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{k}{else}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{残差}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n+nb}{round}\PY{p}{(}\PY{n}{y}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{是异常值}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+残差 -13.33 不是异常值.
+    \end{Verbatim}
+
+    从残差的正态概率图可以看出，这些点大致在一条直线附近，说明数据近似服从正态分布。
+
+    \hypertarget{ux6b8bux5deeux4e0eux62dfux5408ux503cux7684ux5173ux7cfbux56fe}{%
+\subsubsection{残差与拟合值的关系图}\label{ux6b8bux5deeux4e0eux62dfux5408ux503cux7684ux5173ux7cfbux56fe}}
+
+使用残差与拟合值图可验证``残差随机分布''和``具有常量方差''的假设。理想情况下，点应当在
+0
+的两端随机分布（模型的拟合点应该平均散布在被拟合值点附近），点中无可辨识的模式。\\
+下表中的模式可能表示该模型不满足模型假设:
+
+    \begin{longtable}[]{@{}cc@{}}
+\toprule\noalign{}
+模式 & 模式的含义 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+残差相对拟合值呈扇形或不均匀分散 & 异方差 \\
+曲线 & 缺少高阶项 \\
+远离 0 的点 & 异常值 \\
+在 X 方向远离其他点的点 & 有影响的点 \\
+\end{longtable}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{99}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 残差与拟合值的关系图}
+\PY{n}{plt}\PY{o}{.}\PY{n}{scatter}\PY{p}{(}\PY{n}{Y\PYZus{}hat}\PY{p}{,} \PY{n}{res}\PY{p}{,} \PY{n}{c} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Plot of residuals versus y\PYZus{}i}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y\PYZus{}i}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{e\PYZus{}i}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{99}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Text(0, 0.5, 'e\_i')
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_61_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    从残差与拟合值的关系图中，无法拒绝方差齐性的假设。所以不能认为模型不合理，即认为模型合理。
+
+    \hypertarget{ux65b9ux5deeux5206ux6790ux53efux4ee5ux770bux6210ux7279ux6b8aux60c5ux51b5ux4e0bux7684ux56deux5f52ux5206ux6790ux65b9ux5deeux5206ux6790ux5c31ux662fux89e3ux91caux53d8ux91cfux5168ux4e3aux5206ux7ec4ux7684dummyux54d1ux53d8ux91cfux7684ux56deux5f52ux5206ux6790}{%
+\paragraph{方差分析可以看成特殊情况下的回归分析，方差分析就是解释变量全为分组的dummy（哑变量）的回归分析。}\label{ux65b9ux5deeux5206ux6790ux53efux4ee5ux770bux6210ux7279ux6b8aux60c5ux51b5ux4e0bux7684ux56deux5f52ux5206ux6790ux65b9ux5deeux5206ux6790ux5c31ux662fux89e3ux91caux53d8ux91cfux5168ux4e3aux5206ux7ec4ux7684dummyux54d1ux53d8ux91cfux7684ux56deux5f52ux5206ux6790}}
+
+方差齐性检验的本质：样本以及总体的方差分布是常数，和自变量或因变量没关系。\\
+线性回归里面我们一般用残差图来检验方差齐性，画散点图是为了弄清因变量和残差之间有没有关系。这里并不是说不同指标的方差不同，因为这里的自变量不像ANOVA中是可以人为控制的（分组-取值），这里的自变量是\textbf{观察}到的，如果我们没法取到每个
+x 值所有对应的 y
+值，就不能说对不同的指标方差不同，只是说观测值的方差不同（也只是一种探测）；我们这里只是用残差图去估计因变量的方差齐性（比较主观，看残差分布是否与拟合值没有明显的趋势关系）。\\
+当然我们并不能通过残差的分布来证明因变量的方差齐性，我们只是提出了``方差齐性''的假设，然后画出残差图，它杂乱无章，不相关，看起来是独立的，所以我们不能推翻这个假设，就认为观测值的方差是齐性的。
+
+    \hypertarget{task-4-ux82e5ux53d6ux53d1ux52a8ux673aux8f6cux901fux4e3a3000ux8f6cminux9053ux8defux8f9bux70f7ux503cux4e3a90ux53d1ux52a8ux673aux538bux7f29ux503cux4e3a100ux65f6ux5206ux522bux7ed9ux51faux5236ux52a8ux9a6cux529bux503cux7684ux7f6eux4fe1ux533aux95f4ux548cux9884ux6d4bux533aux95f4}{%
+\section{Task 4:
+若取发动机转速为3000转/min，道路辛烷值为90，发动机压缩值为100时，分别给出制动马力值的置信区间和预测区间。}\label{task-4-ux82e5ux53d6ux53d1ux52a8ux673aux8f6cux901fux4e3a3000ux8f6cminux9053ux8defux8f9bux70f7ux503cux4e3a90ux53d1ux52a8ux673aux538bux7f29ux503cux4e3a100ux65f6ux5206ux522bux7ed9ux51faux5236ux52a8ux9a6cux529bux503cux7684ux7f6eux4fe1ux533aux95f4ux548cux9884ux6d4bux533aux95f4}}
+
+    \hypertarget{ux6ce8ux610fux4e24ux8005ux7684ux8ba1ux7b97ux65b9ux6cd5}{%
+\paragraph{注意两者的计算方法}\label{ux6ce8ux610fux4e24ux8005ux7684ux8ba1ux7b97ux65b9ux6cd5}}
+
+    \textbf{Remark3}:
+多元情况下依然有预测区间的长度大于置信区间，借机温习一下二者的计算方法
+
+预测区间：
+
+\[
+(\hat{y}_{f}-t_{\alpha/2}*\sqrt{(1+\frac{1}{n}+\frac{x_{f}-\bar{x}}{\sum_{i=1}^{n}\left(x_{i}-\bar{x}\right)^{2}})\sigma^{2}},\hat{y}_{f}+t_{\alpha/2}*\sqrt{(1+\frac{1}{n}+\frac{x_{f}-\bar{x}}{\sum_{i=1}^{n}\left(x_{i}-\bar{x}\right)^{2}})\sigma^{2}}\]
+
+置信区间：
+
+\[
+(\hat{y}_{f}-t_{\alpha/2}*\sqrt{(\frac{1}{n}+\frac{x_{f}-\bar{x}}{\sum_{i=1}^{n}\left(x_{i}-\bar{x}\right)^{2}})\sigma^{2}},\hat{y}_{f}+t_{\alpha/2}*\sqrt{(\frac{1}{n}+\frac{x_{f}-\bar{x}}{\sum_{i=1}^{n}\left(x_{i}-\bar{x}\right)^{2}})\sigma^{2}}\]
+
+    \hypertarget{ux7f6eux4fe1ux533aux95f4}{%
+\subsubsection{置信区间}\label{ux7f6eux4fe1ux533aux95f4}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{100}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 给定 x\PYZus{}0，求 E(y\PYZus{}0) 的估计值}
+\PY{k}{def} \PY{n+nf}{confidence\PYZus{}interval}\PY{p}{(}\PY{n}{x0}\PY{p}{)}\PY{p}{:}
+    \PY{n}{x0} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{x0}\PY{p}{)}
+    \PY{n}{Y0} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{x0}\PY{o}{.}\PY{n}{T}\PY{p}{,} \PY{n}{beta}\PY{p}{)}
+    \PY{n}{delta0} \PY{o}{=} \PY{n}{tVal} \PY{o}{*} \PY{n}{sigma} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{x0}\PY{o}{.}\PY{n}{T} \PY{o}{@} \PY{n}{C} \PY{o}{@} \PY{n}{x0}\PY{p}{)}
+    \PY{n}{Y0\PYZus{}int} \PY{o}{=} \PY{p}{[}\PY{n}{Y0} \PY{o}{\PYZhy{}} \PY{n}{delta0}\PY{p}{,} \PY{n}{Y0} \PY{o}{+} \PY{n}{delta0}\PY{p}{]}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{delta0}\PY{p}{)}
+    \PY{k}{return} \PY{n}{Y0\PYZus{}int}
+
+\PY{n}{x0} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{:}
+    \PY{n}{x0}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{给定 x = }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{x0}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{, E(y\PYZus{}0) 的置信区间：}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{n}{confidence\PYZus{}interval}\PY{p}{(}\PY{n}{x0}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{宽度 = }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{np}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{n}{confidence\PYZus{}interval}\PY{p}{(}\PY{n}{x0}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{n}{confidence\PYZus{}interval}\PY{p}{(}\PY{n}{x0}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+3000
+90
+100
+8.736173458784997
+给定 x =  [1, 3000, 90, 100] , E(y\_0) 的置信区间： [226.2457 243.7181]
+8.736173458784997
+8.736173458784997
+宽度 =  17.472399999999993
+    \end{Verbatim}
+
+    \hypertarget{ux9884ux6d4bux533aux95f4}{%
+\subsubsection{预测区间}\label{ux9884ux6d4bux533aux95f4}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{101}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} 给定 x\PYZus{}0，求 y\PYZus{}0 的预测区间}
+\PY{k}{def} \PY{n+nf}{confidence\PYZus{}interval}\PY{p}{(}\PY{n}{x0}\PY{p}{)}\PY{p}{:}
+    \PY{n}{x0} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{x0}\PY{p}{)}
+    \PY{n}{Y0} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{x0}\PY{o}{.}\PY{n}{T}\PY{p}{,} \PY{n}{beta}\PY{p}{)}
+    \PY{n}{delta1} \PY{o}{=} \PY{n}{tVal} \PY{o}{*} \PY{n}{sigma} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{1} \PY{o}{+} \PY{n}{x0}\PY{o}{.}\PY{n}{T} \PY{o}{@} \PY{n}{C} \PY{o}{@} \PY{n}{x0}\PY{p}{)}
+    \PY{n}{Y0\PYZus{}int} \PY{o}{=} \PY{p}{[}\PY{n}{Y0} \PY{o}{\PYZhy{}} \PY{n}{delta1}\PY{p}{,} \PY{n}{Y0} \PY{o}{+} \PY{n}{delta1}\PY{p}{]}
+    \PY{k}{return} \PY{n}{Y0\PYZus{}int}
+
+\PY{n}{x0\PYZus{}} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{p}\PY{p}{)}\PY{p}{:}
+    \PY{n}{x0\PYZus{}}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n+nb}{int}\PY{p}{(}\PY{n+nb}{input}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{给定 x = }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{x0\PYZus{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{, y\PYZus{}0 的预测区间：}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{n}{confidence\PYZus{}interval}\PY{p}{(}\PY{n}{x0\PYZus{}}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{宽度 = }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{np}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{n}{confidence\PYZus{}interval}\PY{p}{(}\PY{n}{x0}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{\PYZhy{}}\PY{n}{np}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{n}{confidence\PYZus{}interval}\PY{p}{(}\PY{n}{x0}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+3000
+90
+100
+给定 x =  [1, 3000, 90, 100] , y\_0 的预测区间： [212.8622 257.1016]
+宽度 =  44.23940000000002
+    \end{Verbatim}
+
+    从上面的差值可以看出，宽度44.23\textgreater17.47，符合预测区间大于置信区间的逻辑
+
+    \hypertarget{ux9047ux5230ux7684ux95eeux9898}{%
+\subsubsection{遇到的问题}\label{ux9047ux5230ux7684ux95eeux9898}}
+
+    \hypertarget{ux6807ux51c6ux5316}{%
+\paragraph{1、标准化}\label{ux6807ux51c6ux5316}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{102}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{X} \PY{o}{=} \PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0} \PY{p}{:} \PY{n}{p} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{]}
+\PY{n}{Y} \PY{o}{=} \PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+\PY{c+c1}{\PYZsh{} 求均值}
+\PY{n}{X\PYZus{}mean} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{p} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
+    \PY{n}{X\PYZus{}mean}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n}{k}\PY{p}{]}\PY{p}{)}\PY{p}{)}  \PY{c+c1}{\PYZsh{} 自变量 x 的均值}
+\PY{n}{Y\PYZus{}mean} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{n}{data}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}  \PY{c+c1}{\PYZsh{} 因变量 y 的均值}
+
+\PY{c+c1}{\PYZsh{} 标准化}
+\PY{n}{X\PYZus{}std} \PY{o}{=} \PY{p}{(}\PY{n}{X} \PY{o}{\PYZhy{}} \PY{n}{X\PYZus{}mean}\PY{p}{)} \PY{o}{/} \PY{n}{np}\PY{o}{.}\PY{n}{std}\PY{p}{(}\PY{n}{X}\PY{p}{)}
+\PY{n}{Y\PYZus{}std} \PY{o}{=} \PY{p}{(}\PY{n}{Y} \PY{o}{\PYZhy{}} \PY{n}{Y\PYZus{}mean}\PY{p}{)} \PY{o}{/} \PY{n}{np}\PY{o}{.}\PY{n}{std}\PY{p}{(}\PY{n}{Y}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Do the multiple linear regression}
+\PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{X\PYZus{}std}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{intercept\PYZus{}std}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P1\PYZus{}std}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P2\PYZus{}std}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{P3\PYZus{}std}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{F\PYZus{}std}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{Y\PYZus{}std}
+\PY{n}{model\PYZus{}std} \PY{o}{=} \PY{n}{ols}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{F\PYZus{}std \PYZti{} P1\PYZus{}std + P2\PYZus{}std + P3\PYZus{}std}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{df}\PY{p}{)}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{p}{)}
+\PY{n}{beta\PYZus{}std} \PY{o}{=} \PY{n}{model\PYZus{}std}\PY{o}{.}\PY{n}{params}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{参数估计值: }\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n+nb}{round}\PY{p}{(}\PY{n}{beta\PYZus{}std}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+\PY{n}{Y\PYZus{}hat\PYZus{}std} \PY{o}{=} \PY{n}{model\PYZus{}std}\PY{o}{.}\PY{n}{fittedvalues}
+\PY{n}{model\PYZus{}std}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+参数估计值:
+ Intercept      0.0000
+P1\_std         0.6913
+P2\_std       202.2802
+P3\_std       120.4986
+dtype: float64
+    \end{Verbatim}
+ 
+            
+\prompt{Out}{outcolor}{102}{}
+    
+    \begin{center}
+\begin{tabular}{lclc}
+\toprule
+\textbf{Dep. Variable:}    &      F\_std      & \textbf{  R-squared:         } &     0.807   \\
+\textbf{Model:}            &       OLS        & \textbf{  Adj. R-squared:    } &     0.734   \\
+\textbf{Method:}           &  Least Squares   & \textbf{  F-statistic:       } &     11.12   \\
+\textbf{Date:}             & Sat, 07 Oct 2023 & \textbf{  Prob (F-statistic):} &  0.00317    \\
+\textbf{Time:}             &     15:22:49     & \textbf{  Log-Likelihood:    } &   -7.1718   \\
+\textbf{No. Observations:} &          12      & \textbf{  AIC:               } &     22.34   \\
+\textbf{Df Residuals:}     &           8      & \textbf{  BIC:               } &     24.28   \\
+\textbf{Df Model:}         &           3      & \textbf{                     } &             \\
+\textbf{Covariance Type:}  &    nonrobust     & \textbf{                     } &             \\
+\bottomrule
+\end{tabular}
+\begin{tabular}{lcccccc}
+                   & \textbf{coef} & \textbf{std err} & \textbf{t} & \textbf{P$> |$t$|$} & \textbf{[0.025} & \textbf{0.975]}  \\
+\midrule
+\textbf{Intercept} &    1.735e-17  &        0.156     &  1.12e-16  &         1.000        &       -0.359    &        0.359     \\
+\textbf{P1\_std}   &       0.6913  &        0.289     &     2.390  &         0.044        &        0.024    &        1.358     \\
+\textbf{P2\_std}   &     202.2802  &       54.489     &     3.712  &         0.006        &       76.628    &      327.932     \\
+\textbf{P3\_std}   &     120.4986  &       34.491     &     3.494  &         0.008        &       40.961    &      200.036     \\
+\bottomrule
+\end{tabular}
+\begin{tabular}{lclc}
+\textbf{Omnibus:}       &  0.392 & \textbf{  Durbin-Watson:     } &    1.043  \\
+\textbf{Prob(Omnibus):} &  0.822 & \textbf{  Jarque-Bera (JB):  } &    0.230  \\
+\textbf{Skew:}          & -0.282 & \textbf{  Prob(JB):          } &    0.891  \\
+\textbf{Kurtosis:}      &  2.625 & \textbf{  Cond. No.          } &     350.  \\
+\bottomrule
+\end{tabular}
+%\caption{OLS Regression Results}
+\end{center}
+
+Notes: \newline
+ [1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+
+    
+
+    在标准化的过程中，X没有指定axis=0。如果不指定 axis=0，np.std(X)
+将计算整个矩阵 X
+的标准差，得到的是一个标量值，而我们通常期望的是对每一列（每个自变量）分别计算标准差，以便进行标准化。
+
+通过指定 axis=0，我们告诉 NumPy
+在每一列上计算标准差，而不是整个矩阵。这样，X\_std
+将包含每个自变量的标准化值，而不是整个矩阵的标准差。
+
+因此，指定 axis=0 是确保正确计算每个自变量的标准差，并进行正确的标准化。
+
+    \hypertarget{ux77e9ux9635ux4e58ux6cd5}{%
+\paragraph{2、矩阵乘法}\label{ux77e9ux9635ux4e58ux6cd5}}
+
+    由np.array()多维数组定义的矩阵，使用运算符``@''可以进行矩阵乘法。'*`运算符是将两个向量中每个元素进行相乘，是数乘运算，需要两个参与运算的矩阵维度相同。'np.dot()'和'@'运算符都可以起到矩阵乘法的作用，在处理连乘时`@'相对方便。
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
